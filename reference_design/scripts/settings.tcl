@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------
-# Copyright (c) 2020 by Enclustra GmbH, Switzerland.
+# Copyright (c) 2021 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -54,7 +54,6 @@ switch $module_name {
     set PS_DDR PS_D10H
     set PL_DDR PL_1_D10H
     set MGT_routing G1
-    set Video_Codec None
   }
   ME-XU5-2EG-1I-D11E {
     set part xczu2eg-sfvc784-1-i 
@@ -62,7 +61,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
-    set Video_Codec None
   }
   ME-XU5-3EG-2I-D11E {
     set part xczu3eg-sfvc784-2-i 
@@ -70,7 +68,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_2_D11E
     set MGT_routing G1
-    set Video_Codec None
   }
   ME-XU5-4CG-1E-D11E-G1 {
     set part xczu4cg-sfvc784-1-e 
@@ -78,7 +75,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
-    set Video_Codec None
   }
   ME-XU5-4EV-1I-D11E {
     set part xczu4ev-sfvc784-1-i 
@@ -86,7 +82,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing None
-    set Video_Codec VCU
   }
   ME-XU5-4EV-1I-D11E-G1 {
     set part xczu4ev-sfvc784-1-i 
@@ -94,7 +89,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
-    set Video_Codec VCU
   }
   ME-XU5-5EV-2I-D12E {
     set part xczu5ev-sfvc784-2-i 
@@ -102,7 +96,6 @@ switch $module_name {
     set PS_DDR PS_D12E
     set PL_DDR PL_2_D12E
     set MGT_routing None
-    set Video_Codec VCU
   }
   ME-XU5-5EV-1E-D11E {
     set part xczu5ev-sfvc784-1-e 
@@ -110,7 +103,6 @@ switch $module_name {
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing None
-    set Video_Codec VCU
   }
   ME-XU5-5EV-2I-D12E-G1 {
     set part xczu5ev-sfvc784-2-i 
@@ -118,7 +110,6 @@ switch $module_name {
     set PS_DDR PS_D12E
     set PL_DDR PL_2_D12E
     set MGT_routing G1
-    set Video_Codec VCU
   }
   ME-XU5-5EV-3E-D13E {
     set part xczu5ev-sfvc784-3-e 
@@ -126,7 +117,6 @@ switch $module_name {
     set PS_DDR PS_D13E
     set PL_DDR PL_2_D13E
     set MGT_routing None
-    set Video_Codec VCU
   }
   default {
     puts "$module_name not available"
