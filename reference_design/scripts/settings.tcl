@@ -50,70 +50,60 @@ set module Mercury_XU5
 switch $module_name {
   ME-XU5-2CG-1E-D10H {
     set part xczu2cg-sfvc784-1-e 
-    set ETH_PHASE ETH_PHASE_76_5
     set PS_DDR PS_D10H
     set PL_DDR PL_1_D10H
     set MGT_routing G1
   }
   ME-XU5-2EG-1I-D11E {
     set part xczu2eg-sfvc784-1-i 
-    set ETH_PHASE ETH_PHASE_76_5
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
   }
   ME-XU5-3EG-2I-D11E {
     set part xczu3eg-sfvc784-2-i 
-    set ETH_PHASE ETH_PHASE_76_5
     set PS_DDR PS_D11E
     set PL_DDR PL_2_D11E
     set MGT_routing G1
   }
   ME-XU5-4CG-1E-D11E-G1 {
     set part xczu4cg-sfvc784-1-e 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
   }
   ME-XU5-4EV-1I-D11E {
     set part xczu4ev-sfvc784-1-i 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing None
   }
   ME-XU5-4EV-1I-D11E-G1 {
     set part xczu4ev-sfvc784-1-i 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing G1
   }
   ME-XU5-5EV-2I-D12E {
     set part xczu5ev-sfvc784-2-i 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D12E
     set PL_DDR PL_2_D12E
     set MGT_routing None
   }
   ME-XU5-5EV-1E-D11E {
     set part xczu5ev-sfvc784-1-e 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D11E
     set PL_DDR PL_1_D10H
     set MGT_routing None
   }
   ME-XU5-5EV-2I-D12E-G1 {
     set part xczu5ev-sfvc784-2-i 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D12E
     set PL_DDR PL_2_D12E
     set MGT_routing G1
   }
   ME-XU5-5EV-3E-D13E {
     set part xczu5ev-sfvc784-3-e 
-    set ETH_PHASE ETH_PHASE_90
     set PS_DDR PS_D13E
     set PL_DDR PL_2_D13E
     set MGT_routing None

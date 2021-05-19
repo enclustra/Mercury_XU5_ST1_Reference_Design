@@ -56,4 +56,4 @@ set_property STEPS.INIT_DESIGN.TCL.PRE [ get_files $norm_settings_file -of [get_
 # timing constraints are only relevant for implementation
 set_property used_in_synthesis false [get_files *.xdc]
 
-puts "INFO: END of [info script].tcl"
+puts "INFO: END of [info script]"
