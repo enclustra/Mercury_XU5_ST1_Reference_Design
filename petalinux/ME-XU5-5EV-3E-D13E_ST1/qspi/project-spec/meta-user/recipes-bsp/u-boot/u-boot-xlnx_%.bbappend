@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI += "file://platform-top.h"
 SRC_URI += " file://zynqmp_board.patch"
+SRC_URI += " file://qspi.patch"
 SRC_URI += " file://phy_delay.patch"
 SRC_URI += " file://emmc.patch"
 SRC_URI += " file://eeprom.patch"

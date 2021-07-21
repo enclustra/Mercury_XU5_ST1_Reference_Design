@@ -21995,19 +21995,19 @@ static int serdes_illcalib_pcie_gen1 (u32 lane3_protocol, u32 lane3_rate, u32 la
           {
             ill1_val[loop] = ((0x04 + meancount[loop]*8) % 0x100);
             ill12_val[loop] = ((0x04 + meancount[loop]*8) >= 0x100) ? 0x10 : 0x00;
-            Xil_Out32(0xFFFE0000+loop*4,iterresult[loop]);
+            /*Xil_Out32(0xFFFE0000+loop*4,iterresult[loop]);
             Xil_Out32(0xFFFE0010+loop*4,iterresult[loop+4]);
             Xil_Out32(0xFFFE0020+loop*4,bistpasscount[loop]);
-            Xil_Out32(0xFFFE0030+loop*4,meancount[loop]);
+            Xil_Out32(0xFFFE0030+loop*4,meancount[loop]);*/
           }
           if (gen2_calib == 1) 
           {
             ill1_val[loop] = ((0x104 + meancount[loop]*8) % 0x100);
             ill12_val[loop] = ((0x104 + meancount[loop]*8) >= 0x200) ? 0x02 : 0x01;
-            Xil_Out32(0xFFFE0040+loop*4,iterresult[loop]);
+            /*Xil_Out32(0xFFFE0040+loop*4,iterresult[loop]);
             Xil_Out32(0xFFFE0050+loop*4,iterresult[loop+4]);
             Xil_Out32(0xFFFE0060+loop*4,bistpasscount[loop]);
-            Xil_Out32(0xFFFE0070+loop*4,meancount[loop]);
+            Xil_Out32(0xFFFE0070+loop*4,meancount[loop]);*/
           }
         }
         if (gen2_calib != 1) 

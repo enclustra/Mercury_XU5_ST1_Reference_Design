@@ -15,7 +15,16 @@
  	initr_scsi,
 --- u-boot-xlnx/board/xilinx/Kconfig
 +++ xilinx-uboot/board/xilinx/Kconfig
-@@ -63,3 +63,13 @@
+@@ -48,7 +48,7 @@
+ endif
+ 
+ config XILINX_OF_BOARD_DTB_ADDR
+-	hex "Default DTB pickup address"
++	hex
+ 	default 0x1000 if ARCH_VERSAL
+ 	default 0x100000 if ARCH_ZYNQ || ARCH_ZYNQMP
+ 	depends on OF_BOARD || OF_SEPARATE
+@@ -63,3 +63,18 @@
  	default 0x7F80000 if ARCH_VERSAL
  	help
  	   Specifies distro boot script offset in NAND/NOR flash.
@@ -29,6 +38,11 @@
 +	bool "QSPI NAND multiplexer"
 +	help
 +	  Enables MIO multiplexer for Enclustra ZX modules
++
++config ENCLUSTRA_QSPI_FLASHMAP
++	bool "QSPI Flash Map"
++	help
++	  Includes device specific QSPI flash maps in the U-Boot environment
 --- u-boot-xlnx/board/xilinx/common/enclustra.c
 +++ xilinx-uboot/board/xilinx/common/enclustra.c
 @@ -0,0 +1,94 @@

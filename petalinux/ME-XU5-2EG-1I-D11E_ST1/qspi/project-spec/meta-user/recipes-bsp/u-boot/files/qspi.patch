@@ -1,0 +1,13 @@
+--- u-boot-xlnx/drivers/spi/zynqmp_gqspi.c
++++ xilinx-uboot/drivers/spi/zynqmp_gqspi.c
+@@ -73,8 +73,8 @@
+ #define GQSPI_DMA_DST_I_STS_MASK	0xFE
+ #define MODEBITS			0x6
+ 
+-#define QUAD_OUT_READ_CMD		0x6B
+-#define QUAD_PAGE_PROGRAM_CMD		0x32
++#define QUAD_OUT_READ_CMD		0x6C
++#define QUAD_PAGE_PROGRAM_CMD		0x34
+ #define DUAL_OUTPUT_FASTRD_CMD		0x3B
+ 
+ #define GQSPI_GFIFO_SELECT		BIT(0)

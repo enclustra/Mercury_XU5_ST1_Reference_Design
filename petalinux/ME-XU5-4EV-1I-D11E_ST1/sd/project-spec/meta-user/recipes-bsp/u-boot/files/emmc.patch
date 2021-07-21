@@ -33,18 +33,30 @@
  	mask = SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT;
  
  	/* We shouldn't wait for data inihibit for stop commands, even
-@@ -830,7 +837,7 @@
+@@ -830,10 +837,7 @@
  	if (host->quirks & SDHCI_QUIRK_BROKEN_VOLTAGE)
  		cfg->voltages |= host->voltages;
  
--	cfg->host_caps |= MMC_MODE_HS | MMC_MODE_HS_52MHz | MMC_MODE_4BIT;
+-	if (caps & SDHCI_CAN_DO_HISPD)
+-		cfg->host_caps |= MMC_MODE_HS | MMC_MODE_HS_52MHz;
+-
+-	cfg->host_caps |= MMC_MODE_4BIT;
 +	cfg->host_caps |= MMC_MODE_HS | MMC_MODE_HS_52MHz | MMC_MODE_8BIT | MMC_MODE_4BIT;
  
  	/* Since Host Controller Version3.0 */
  	if (SDHCI_GET_VERSION(host) >= SDHCI_SPEC_300) {
 --- u-boot-xlnx/drivers/mmc/zynq_sdhci.c
 +++ xilinx-uboot/drivers/mmc/zynq_sdhci.c
-@@ -42,6 +42,8 @@
+@@ -15,6 +15,8 @@
+ #include <sdhci.h>
+ #include <zynqmp_tap_delay.h>
+ 
++DECLARE_GLOBAL_DATA_PTR;
++
+ #define SDHCI_ARASAN_ITAPDLY_REGISTER	0xF0F8
+ #define SDHCI_ARASAN_OTAPDLY_REGISTER	0xF0FC
+ #define SDHCI_ITAPDLY_CHGWIN		0x200
+@@ -40,6 +42,8 @@
  	u8 deviceid;
  	u8 bank;
  	u8 no_1p8;
@@ -53,7 +65,7 @@
  };
  
  #if defined(CONFIG_ARCH_ZYNQMP) || defined(CONFIG_ARCH_VERSAL)
-@@ -559,7 +561,16 @@
+@@ -557,7 +561,16 @@
  	unsigned long clock;
  	int ret;
  
@@ -71,7 +83,7 @@
  
  	ret = clk_get_by_index(dev, 0, &clk);
  	if (ret < 0) {
-@@ -588,10 +599,14 @@
+@@ -586,10 +599,14 @@
  	host->quirks |= SDHCI_QUIRK_BROKEN_HISPD_MODE;
  #endif
  
@@ -87,7 +99,7 @@
  
  	ret = mmc_of_parse(dev, &plat->cfg);
  	if (ret)
-@@ -622,6 +637,14 @@
+@@ -620,6 +637,14 @@
  
  	priv->host->name = dev->name;
  
@@ -102,6 +114,15 @@
  #if defined(CONFIG_ARCH_ZYNQMP) || defined(CONFIG_ARCH_VERSAL)
  	priv->host->ops = &arasan_ops;
  	arasan_dt_parse_clk_phases(dev);
+@@ -630,7 +655,7 @@
+ 		return PTR_ERR(priv->host->ioaddr);
+ 
+ 	priv->deviceid = dev_read_u32_default(dev, "xlnx,device_id", -1);
+-	priv->bank = dev_read_u32_default(dev, "xlnx,mio-bank", 0);
++	priv->bank = dev_read_u32_default(dev, "xlnx,mio_bank", -1);
+ 	priv->no_1p8 = dev_read_bool(dev, "no-1-8-v");
+ 
+ 	return 0;
 --- u-boot-xlnx/include/sdhci.h
 +++ xilinx-uboot/include/sdhci.h
 @@ -244,6 +244,7 @@
