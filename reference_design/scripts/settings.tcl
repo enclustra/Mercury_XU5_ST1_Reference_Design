@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------
-# Copyright (c) 2021 by Enclustra GmbH, Switzerland.
+# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -23,14 +23,14 @@
 # Valid module codes
 # ME-XU5-2CG-1E-D10H
 # ME-XU5-2EG-1I-D11E
+# ME-XU5-2EG-1I-D11E-ER
 # ME-XU5-3EG-2I-D11E
 # ME-XU5-4CG-1E-D11E-G1
 # ME-XU5-4EV-1I-D11E
 # ME-XU5-4EV-1I-D11E-G1
-# ME-XU5-5EV-2I-D12E
 # ME-XU5-5EV-1E-D11E
+# ME-XU5-5EV-2I-D12E
 # ME-XU5-5EV-2I-D12E-G1
-# ME-XU5-5EV-3E-D13E
 
 # ----------------------------------------------------------------------------------
 # Modify this variable to select your module
@@ -46,67 +46,138 @@ if {![info exists baseboard]}   {set baseboard ST1}
 if {[lindex $argv 0] != ""} { set module_name [lindex $argv 0] }
 
 set module Mercury_XU5
+set family zynqmp
 
 switch $module_name {
   ME-XU5-2CG-1E-D10H {
     set part xczu2cg-sfvc784-1-e 
-    set PS_DDR PS_D10H
-    set PL_DDR PL_1_D10H
-    set MGT_routing G1
+    set PS_DDR_TYPE PS_D10H
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
+    set MGT_routing No_MGT_routing
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-2EG-1I-D11E {
     set part xczu2eg-sfvc784-1-i 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_1_D10H
-    set MGT_routing G1
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
+    set MGT_routing No_MGT_routing
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
+  }
+  ME-XU5-2EG-1I-D11E-ER {
+    set part xczu2eg-sfvc784-1-i 
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
+    set MGT_routing No_MGT_routing
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-3EG-2I-D11E {
     set part xczu3eg-sfvc784-2-i 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_2_D11E
-    set MGT_routing G1
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1200MHz
+    set MGT_routing No_MGT_routing
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-4CG-1E-D11E-G1 {
     set part xczu4cg-sfvc784-1-e 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_1_D10H
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
     set MGT_routing G1
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-4EV-1I-D11E {
     set part xczu4ev-sfvc784-1-i 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_1_D10H
-    set MGT_routing None
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
+    set MGT_routing Standard
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-4EV-1I-D11E-G1 {
     set part xczu4ev-sfvc784-1-i 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_1_D10H
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
     set MGT_routing G1
-  }
-  ME-XU5-5EV-2I-D12E {
-    set part xczu5ev-sfvc784-2-i 
-    set PS_DDR PS_D12E
-    set PL_DDR PL_2_D12E
-    set MGT_routing None
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-5EV-1E-D11E {
     set part xczu5ev-sfvc784-1-e 
-    set PS_DDR PS_D11E
-    set PL_DDR PL_1_D10H
-    set MGT_routing None
+    set PS_DDR_TYPE PS_D11E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 512MB_1066MHz
+    set MGT_routing Standard
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
+  }
+  ME-XU5-5EV-2I-D12E {
+    set part xczu5ev-sfvc784-2-i 
+    set PS_DDR_TYPE PS_D12E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 1GB_1200MHz
+    set MGT_routing Standard
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   ME-XU5-5EV-2I-D12E-G1 {
     set part xczu5ev-sfvc784-2-i 
-    set PS_DDR PS_D12E
-    set PL_DDR PL_2_D12E
+    set PS_DDR_TYPE PS_D12E
+    set PL_DDR PL_DDR
+    set PL_DDR_TYPE 1GB_1200MHz
     set MGT_routing G1
-  }
-  ME-XU5-5EV-3E-D13E {
-    set part xczu5ev-sfvc784-3-e 
-    set PS_DDR PS_D13E
-    set PL_DDR PL_2_D13E
-    set MGT_routing None
+    set PL_ETH PL_ETH
+    set PS_ETH PS_ETH
+    set PS_USB0 PS_USB0
+    set PS_USB1 PS_USB1
+    set PS_EMMC PS_EMMC
+    set PS_QSPI PS_QSPI
   }
   default {
     puts "$module_name not available"
@@ -119,7 +190,6 @@ if {![info exists project_name]} {
   set project_name ${module}
   if {[info exists baseboard]} {
     lappend project_name ${baseboard}
-    puts $project_name
   }
   set project_name [string map {" " "_"} "${project_name}"]
 }

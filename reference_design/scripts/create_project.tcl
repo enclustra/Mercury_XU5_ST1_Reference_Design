@@ -5,8 +5,8 @@
 # part, PS_DDR, project_name, vivado_dir
 # ########################################################################################
 
-if {[file exists scripts/settings.tcl] } { source scripts/settings.tcl }
-if {![info exists vivado_dir]} { set vivado_dir "Vivado/${module_name}" }
+if {[file exists [file join scripts settings.tcl]] } { source [file join scripts settings.tcl] }
+if {![info exists vivado_dir]} { set vivado_dir [file join Vivado ${module_name}] }
 
 # Create project
 create_project ${project_name} ${vivado_dir} -part ${part}
@@ -54,6 +54,9 @@ set_property STEPS.SYNTH_DESIGN.TCL.PRE [ get_files $norm_settings_file -of [get
 set_property STEPS.INIT_DESIGN.TCL.PRE [ get_files $norm_settings_file -of [get_fileset utils_1] ] [get_runs impl_1]
 
 # timing constraints are only relevant for implementation
+if {[llength [glob -nocomplain -type f -directory src *_timing.tcl]] != 0} {
+    set_property used_in_synthesis false [get_files -filter {NAME =~ *_timing.tcl}]
+}
 set_property used_in_synthesis false [get_files *.xdc]
 
 puts "INFO: END of [info script]"

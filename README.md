@@ -8,6 +8,7 @@ Enlustra GmbH [support@enclustra.com]
 
 * Gian Koeppel
 * Daniel Duerner
+* Eike Sommer
 * Arthur Ruder
 
 ## Documentation
@@ -17,6 +18,8 @@ Enlustra GmbH [support@enclustra.com]
 * Enclustra Application Notes
   - [I2C AppNote](https://github.com/enclustra/I2CAppNote)
   - [Gigabit Ethernet AppNote](https://github.com/enclustra/GigabitEthernetAppNote)
+  - [ZynqMP Video AppNote](https://github.com/enclustra/ZynqMpVideoAppNote)
+  - [ZynqMP Secure Boot AppNote](https://github.com/enclustra/ZynqMPSecureBootAppNote)
 
 ## Changelog
 See [Changelog](changelog.md).
