@@ -1,5 +1,5 @@
-# ----------------------------------------------------------------------------------
-# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
+# ----------------------------------------------------------------------------------------------------
+# Copyright (c) 2024 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -17,7 +17,7 @@
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # PRODUCT OR THE USE OR OTHER DEALINGS IN THE PRODUCT.
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 create_bd_design $module
 
@@ -65,6 +65,20 @@ if { $PS_DDR_TYPE == "PS_D10H"} {
     CONFIG.PSU__DDRC__ROW_ADDR_COUNT {15} \
     CONFIG.PSU__DDRC__BG_ADDR_COUNT {1} \
     CONFIG.PSU__DDRC__ECC {Disabled} \
+    CONFIG.PSU__DDRC__PARITY_ENABLE {1} \
+    CONFIG.PSU__DDRC__BUS_WIDTH {32 Bit} \
+  ] [get_bd_cells zynq_ultra_ps_e]
+}
+
+if { $PS_DDR_TYPE == "PS_D10EH"} {
+  set_property -dict [ list \
+    CONFIG.PSU__DDRC__SPEED_BIN {DDR4_2400T} \
+    CONFIG.PSU__DDRC__CWL {12} \
+    CONFIG.PSU__DDRC__DEVICE_CAPACITY {4096 MBits} \
+    CONFIG.PSU__DDRC__DRAM_WIDTH {16 Bits} \
+    CONFIG.PSU__DDRC__ROW_ADDR_COUNT {15} \
+    CONFIG.PSU__DDRC__BG_ADDR_COUNT {1} \
+    CONFIG.PSU__DDRC__ECC {Enabled} \
     CONFIG.PSU__DDRC__PARITY_ENABLE {1} \
     CONFIG.PSU__DDRC__BUS_WIDTH {32 Bit} \
   ] [get_bd_cells zynq_ultra_ps_e]
@@ -145,6 +159,7 @@ if { $PS_ETH == "PS_ETH"} {
 if { $PS_USB0 == "PS_USB0"} {
   set_property -dict [ list \
     CONFIG.PSU__USB0__PERIPHERAL__ENABLE {1} \
+    CONFIG.PSU__USB__RESET__MODE {Disable} \
     CONFIG.PSU__USB0__REF_CLK_SEL {Ref Clk2} \
     CONFIG.PSU__USB0__REF_CLK_FREQ {100} \
   ] [get_bd_cells zynq_ultra_ps_e]
@@ -153,6 +168,7 @@ if { $PS_USB0 == "PS_USB0"} {
 if { $PS_USB1 == "PS_USB1"} {
   set_property -dict [ list \
     CONFIG.PSU__USB1__PERIPHERAL__ENABLE {1} \
+    CONFIG.PSU__USB__RESET__MODE {Disable} \
     CONFIG.PSU__USB1__REF_CLK_SEL {Ref Clk2} \
     CONFIG.PSU__USB1__REF_CLK_FREQ {100} \
   ] [get_bd_cells zynq_ultra_ps_e]
@@ -162,6 +178,8 @@ if { $PS_EMMC == "PS_EMMC"} {
   set_property -dict [ list \
     CONFIG.PSU__SD0__PERIPHERAL__ENABLE {1} \
     CONFIG.PSU__SD0__SLOT_TYPE {eMMC} \
+    CONFIG.PSU__SD0__PERIPHERAL__IO {MIO 13 .. 22} \
+    CONFIG.PSU__SD0__DATA_TRANSFER_MODE {8bit} \
   ] [get_bd_cells zynq_ultra_ps_e]
 }
 
@@ -192,6 +210,7 @@ set_property -dict [ list \
   CONFIG.PSU_MIO_21_PULLUPDOWN {disable} \
   CONFIG.PSU__SD0__PERIPHERAL__IO {MIO 13 .. 22} \
   CONFIG.PSU__SD0__DATA_TRANSFER_MODE {8Bit} \
+  CONFIG.PSU__USE__IRQ0  {1} \
 ] [get_bd_cells zynq_ultra_ps_e]
 set_property -dict [ list \
   CONFIG.PSU__I2C1__PERIPHERAL__ENABLE {1} \
@@ -331,14 +350,13 @@ if { $PL_ETH == "PL_ETH"} {
 set_property -dict [ list \
   CONFIG.PSU__USB3_0__PERIPHERAL__ENABLE {1} \
   CONFIG.PSU__USB3_0__PERIPHERAL__IO {GT Lane2} \
-  CONFIG.PSU__USB0__REF_CLK_SEL {Ref Clk2} \
-  CONFIG.PSU__USB0__REF_CLK_FREQ {100} \
 ] [get_bd_cells zynq_ultra_ps_e]
 
 connect_bd_net [get_bd_pins zynq_ultra_ps_e/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e/pl_clk0]
 create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 ps_sys_rst
 connect_bd_net [get_bd_pins ps_sys_rst/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e/pl_clk0]
 connect_bd_net [get_bd_pins ps_sys_rst/ext_reset_in] [get_bd_pins zynq_ultra_ps_e/pl_resetn0]
+connect_bd_net [get_bd_pins system_management_wiz/ip2intc_irpt] [get_bd_pins zynq_ultra_ps_e/pl_ps_irq0]
 set IIC_FPGA [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 IIC_FPGA ]
 connect_bd_intf_net [get_bd_intf_ports IIC_FPGA] [get_bd_intf_pins zynq_ultra_ps_e/IIC_1]
 

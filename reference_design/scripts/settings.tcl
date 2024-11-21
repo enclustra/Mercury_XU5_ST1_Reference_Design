@@ -1,5 +1,5 @@
-# ----------------------------------------------------------------------------------
-# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
+# ----------------------------------------------------------------------------------------------------
+# Copyright (c) 2024 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -17,13 +17,12 @@
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # PRODUCT OR THE USE OR OTHER DEALINGS IN THE PRODUCT.
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 # Project settings for Mercury XU5 Reference Design
 # Valid module codes
 # ME-XU5-2CG-1E-D10H
 # ME-XU5-2EG-1I-D11E
-# ME-XU5-2EG-1I-D11E-ER
 # ME-XU5-3EG-2I-D11E
 # ME-XU5-4CG-1E-D11E-G1
 # ME-XU5-4EV-1I-D11E
@@ -32,15 +31,16 @@
 # ME-XU5-5EV-2I-D12E
 # ME-XU5-5EV-2I-D12E-G1
 
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 # Modify this variable to select your module
 if {![info exists module_name]} {set module_name ME-XU5-2CG-1E-D10H}
 if {![info exists baseboard]}   {set baseboard ST1}
-# ----------------------------------------------------------------------------------
+if {![info exists vivado_dir]}   {set vivado_dir [file join Vivado ${module_name}] }
+# ----------------------------------------------------------------------------------------------------
 
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 # Don't modify anything beyond this line
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 #if any file argument are present, use this value
 if {[lindex $argv 0] != ""} { set module_name [lindex $argv 0] }
@@ -63,19 +63,6 @@ switch $module_name {
     set PS_QSPI PS_QSPI
   }
   ME-XU5-2EG-1I-D11E {
-    set part xczu2eg-sfvc784-1-i 
-    set PS_DDR_TYPE PS_D11E
-    set PL_DDR PL_DDR
-    set PL_DDR_TYPE 512MB_1066MHz
-    set MGT_routing No_MGT_routing
-    set PL_ETH PL_ETH
-    set PS_ETH PS_ETH
-    set PS_USB0 PS_USB0
-    set PS_USB1 PS_USB1
-    set PS_EMMC PS_EMMC
-    set PS_QSPI PS_QSPI
-  }
-  ME-XU5-2EG-1I-D11E-ER {
     set part xczu2eg-sfvc784-1-i 
     set PS_DDR_TYPE PS_D11E
     set PL_DDR PL_DDR

@@ -1,5 +1,5 @@
-# ----------------------------------------------------------------------------------
-# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
+# ----------------------------------------------------------------------------------------------------
+# Copyright (c) 2024 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -17,7 +17,7 @@
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # PRODUCT OR THE USE OR OTHER DEALINGS IN THE PRODUCT.
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
 set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN ENABLE [current_design]
  
@@ -68,6 +68,10 @@ if {$MGT_routing == "No_MGT_routing"} {
   set_property -dict {PACKAGE_PIN C4    IOSTANDARD LVCMOS18  } [get_ports {CLK_REF0_N}]
   set_property -dict {PACKAGE_PIN D4    IOSTANDARD LVCMOS18  } [get_ports {CLK_REF0_P}]
 }
+if {$MGT_routing == "Standard"} {
+  # set_property PACKAGE_PIN Y5    [get_ports {CLK_REF0_N}] # GTH
+  # set_property PACKAGE_PIN Y6    [get_ports {CLK_REF0_P}] # GTH
+}
 
 # Clock Generator CLK0
 set_property -dict {PACKAGE_PIN AC13  IOSTANDARD DIFF_SSTL18_I} [get_ports {CLK_USR_N}]
@@ -78,6 +82,16 @@ set_property -dict {PACKAGE_PIN D11   IOSTANDARD LVCMOS18  } [get_ports {DP_HPD}
 set_property -dict {PACKAGE_PIN E10   IOSTANDARD LVCMOS18  } [get_ports {DP_AUX_IN}]
 set_property -dict {PACKAGE_PIN E12   IOSTANDARD LVCMOS18  } [get_ports {DP_AUX_OE}]
 set_property -dict {PACKAGE_PIN D10   IOSTANDARD LVCMOS18  } [get_ports {DP_AUX_OUT}]
+if {$MGT_routing == "G1"} {
+  # set_property PACKAGE_PIN U3    [get_ports {DP_LANE0_N}] # GTH
+  # set_property PACKAGE_PIN V1    [get_ports {DP_LANE3_N}] # GTH
+  # set_property PACKAGE_PIN U4    [get_ports {DP_LANE0_P}] # GTH
+  # set_property PACKAGE_PIN V2    [get_ports {DP_LANE3_P}] # GTH
+  # set_property PACKAGE_PIN W3    [get_ports {DP_LANE1_N}] # GTH
+  # set_property PACKAGE_PIN Y1    [get_ports {DP_LANE2_N}] # GTH
+  # set_property PACKAGE_PIN W4    [get_ports {DP_LANE1_P}] # GTH
+  # set_property PACKAGE_PIN Y2    [get_ports {DP_LANE2_P}] # GTH
+}
 
 # FMC HPC Connector
 set_property -dict {PACKAGE_PIN N8    IOSTANDARD LVCMOS18  } [get_ports {FMC_LA02_N}]
@@ -169,6 +183,8 @@ if {$MGT_routing == "G1"} {
   set_property -dict {PACKAGE_PIN E4    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP3_C2M_P}]
   set_property -dict {PACKAGE_PIN T7    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP3_M2C_N}]
   set_property -dict {PACKAGE_PIN R7    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP3_M2C_P}]
+  # set_property PACKAGE_PIN V5    [get_ports {FMC_GCLK0_M2C_N}] # GTH
+  # set_property PACKAGE_PIN V6    [get_ports {FMC_GCLK0_M2C_P}] # GTH
 }
 if {$MGT_routing == "No_MGT_routing"} {
   set_property -dict {PACKAGE_PIN D1    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP0_C2M_N}]
@@ -188,6 +204,26 @@ if {$MGT_routing == "No_MGT_routing"} {
   set_property -dict {PACKAGE_PIN T7    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP3_M2C_N}]
   set_property -dict {PACKAGE_PIN R7    IOSTANDARD LVCMOS18  } [get_ports {FMC_DP3_M2C_P}]
 }
+if {$MGT_routing == "Standard"} {
+  # set_property PACKAGE_PIN W3    [get_ports {FMC_DP0_C2M_N}] # GTH
+  # set_property PACKAGE_PIN W4    [get_ports {FMC_DP0_C2M_P}] # GTH
+  # set_property PACKAGE_PIN Y1    [get_ports {FMC_DP0_M2C_N}] # GTH
+  # set_property PACKAGE_PIN Y2    [get_ports {FMC_DP0_M2C_P}] # GTH
+  # set_property PACKAGE_PIN U3    [get_ports {FMC_DP1_C2M_N}] # GTH
+  # set_property PACKAGE_PIN U4    [get_ports {FMC_DP1_C2M_P}] # GTH
+  # set_property PACKAGE_PIN V1    [get_ports {FMC_DP1_M2C_N}] # GTH
+  # set_property PACKAGE_PIN V2    [get_ports {FMC_DP1_M2C_P}] # GTH
+  # set_property PACKAGE_PIN R3    [get_ports {FMC_DP2_C2M_N}] # GTH
+  # set_property PACKAGE_PIN R4    [get_ports {FMC_DP2_C2M_P}] # GTH
+  # set_property PACKAGE_PIN T1    [get_ports {FMC_DP2_M2C_N}] # GTH
+  # set_property PACKAGE_PIN T2    [get_ports {FMC_DP2_M2C_P}] # GTH
+  # set_property PACKAGE_PIN N3    [get_ports {FMC_DP3_C2M_N}] # GTH
+  # set_property PACKAGE_PIN N4    [get_ports {FMC_DP3_C2M_P}] # GTH
+  # set_property PACKAGE_PIN P1    [get_ports {FMC_DP3_M2C_N}] # GTH
+  # set_property PACKAGE_PIN P2    [get_ports {FMC_DP3_M2C_P}] # GTH
+  # set_property PACKAGE_PIN V5    [get_ports {FMC_GCLK0_M2C_N}] # GTH
+  # set_property PACKAGE_PIN V6    [get_ports {FMC_GCLK0_M2C_P}] # GTH
+}
 
 # HDMI
 set_property -dict {PACKAGE_PIN AE10  IOSTANDARD LVCMOS18  } [get_ports {HDMI_HPD}]
@@ -205,6 +241,8 @@ set_property -dict {PACKAGE_PIN C12   IOSTANDARD LVCMOS18  } [get_ports {I2C_SDA
 
 # IO2
 if {$MGT_routing == "G1"} {
+  # set_property PACKAGE_PIN Y6    [get_ports {IO2_D0_P}] # GTH
+  # set_property PACKAGE_PIN Y5    [get_ports {IO2_D1_N}] # GTH
   set_property -dict {PACKAGE_PIN G1    IOSTANDARD LVCMOS18  } [get_ports {IO2_D2_P}]
   set_property -dict {PACKAGE_PIN F1    IOSTANDARD LVCMOS18  } [get_ports {IO2_D3_N}]
 }
@@ -327,3 +365,15 @@ set_property -dict {PACKAGE_PIN C11   IOSTANDARD LVCMOS18  } [get_ports {ETH1_IN
 set_property -dict {PACKAGE_PIN B10   IOSTANDARD LVCMOS18  } [get_ports {ETH1_RESET_N}]
 set_property -dict {PACKAGE_PIN F10   IOSTANDARD LVCMOS18  } [get_ports {ETH1_RXCTL}]
 set_property -dict {PACKAGE_PIN F11   IOSTANDARD LVCMOS18  } [get_ports {ETH1_TXCTL}]
+
+# USB3
+if {$MGT_routing == "G1"} {
+  # set_property PACKAGE_PIN T1    [get_ports {USB0_SSRX_N}] # GTH
+  # set_property PACKAGE_PIN P1    [get_ports {USB1_SSRX_N}] # GTH
+  # set_property PACKAGE_PIN T2    [get_ports {USB0_SSRX_P}] # GTH
+  # set_property PACKAGE_PIN P2    [get_ports {USB1_SSRX_P}] # GTH
+  # set_property PACKAGE_PIN R3    [get_ports {USB0_SSTX_N}] # GTH
+  # set_property PACKAGE_PIN N3    [get_ports {USB1_SSTX_N}] # GTH
+  # set_property PACKAGE_PIN R4    [get_ports {USB0_SSTX_P}] # GTH
+  # set_property PACKAGE_PIN N4    [get_ports {USB1_SSTX_P}] # GTH
+}

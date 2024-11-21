@@ -1,5 +1,5 @@
----------------------------------------------------------------------------------------------------
--- Copyright (c) 2022 by Enclustra GmbH, Switzerland.
+----------------------------------------------------------------------------------------------------
+-- Copyright (c) 2024 by Enclustra GmbH, Switzerland.
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy of
 -- this hardware, software, firmware, and associated documentation files (the
@@ -17,18 +17,21 @@
 -- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 -- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 -- PRODUCT OR THE USE OR OTHER DEALINGS IN THE PRODUCT.
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 -- libraries
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
----------------------------------------------------------------------------------------------------
+library unisim;
+use unisim.vcomponents.all;
+
+----------------------------------------------------------------------------------------------------
 -- entity declaration
----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 entity Mercury_XU5_ST1 is
   generic (
     BG_WIDTH : natural
@@ -253,9 +256,9 @@ end Mercury_XU5_ST1;
 
 architecture rtl of Mercury_XU5_ST1 is
 
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   -- component declarations
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   component Mercury_XU5 is
     port (
       DP_AUX_OUT          : out    std_logic;
@@ -311,6 +314,14 @@ architecture rtl of Mercury_XU5_ST1 is
     );
     
   end component Mercury_XU5;
+  component IBUFDS is
+      port (
+        O : out STD_LOGIC;
+        I : in STD_LOGIC;
+        IB : in STD_LOGIC
+      );
+    end component IBUFDS;
+  
   
   component IOBUF is
     port (
@@ -354,9 +365,9 @@ architecture rtl of Mercury_XU5_ST1 is
   );
   end component Mercury_XU5_GMII2RGMII;
 
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   -- signal declarations
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   signal Clk100           : std_logic;
   signal Clk50            : std_logic;
   signal Rst_N            : std_logic;
@@ -388,12 +399,16 @@ architecture rtl of Mercury_XU5_ST1 is
   signal GMII_txd         : std_logic_vector(7 downto 0);
   signal dp_aux_data_oe_n : std_logic;
   signal LedCount         : unsigned(23 downto 0);
+  
+  ----------------------------------------------------------------------------------------------------
+  -- attribute declarations
+  ----------------------------------------------------------------------------------------------------
 
 begin
   
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   -- processor system instance
-  ---------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------------------------------
   Mercury_XU5_i: component Mercury_XU5
     port map (
       DP_AUX_OUT           => DP_AUX_OUT,
@@ -448,6 +463,13 @@ begin
       GMII_txd             => GMII_txd
     );
   
+  CLK_USR_buf: component IBUFDS
+  port map (
+  	O => open,
+  	I => CLK_USR_P,
+  	IB => CLK_USR_N
+  );
+  
   DP_AUX_OE <= not dp_aux_data_oe_n;
   
   IIC_FPGA_scl_iobuf: component IOBUF
@@ -465,7 +487,6 @@ begin
       O => IIC_FPGA_sda_i,
       T => IIC_FPGA_sda_t
     );
-  
   process (Clk50)
   begin
     if rising_edge (Clk50) then
@@ -521,5 +542,4 @@ begin
     );
   
   ETH1_RESET_N        <= ETH_resetn;
-  
 end rtl;
