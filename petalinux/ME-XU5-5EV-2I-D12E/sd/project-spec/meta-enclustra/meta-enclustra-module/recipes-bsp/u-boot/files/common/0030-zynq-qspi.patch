@@ -1,0 +1,26 @@
+From 70716aa9f99f83f8323aca5e33e3c072215aaab6 Mon Sep 17 00:00:00 2001
+From: Lothar Rubusch <lothar.rubusch@enclustra.com>
+Date: Wed, 11 Sep 2024 19:05:24 +0000
+Subject: [PATCH] qspi: fix read instruction
+
+Signed-off-by: Lothar Rubusch <lothar.rubusch@enclustra.com>
+---
+ drivers/spi/zynq_qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/zynq_qspi.c b/drivers/spi/zynq_qspi.c
+index c387e4aaf0..b8b039c411 100644
+--- a/drivers/spi/zynq_qspi.c
++++ b/drivers/spi/zynq_qspi.c
+@@ -45,7 +45,7 @@ DECLARE_GLOBAL_DATA_PTR;
+ #define ZYNQ_QSPI_TXD_00_01_OFFSET	0x80	/* Transmit 1-byte inst */
+ #define ZYNQ_QSPI_TXD_00_10_OFFSET	0x84	/* Transmit 2-byte inst */
+ #define ZYNQ_QSPI_TXD_00_11_OFFSET	0x88	/* Transmit 3-byte inst */
+-#define ZYNQ_QSPI_FR_QOUT_CODE		0x6B    /* read instruction code */
++#define ZYNQ_QSPI_FR_QOUT_CODE		0x6C    /* read instruction code */
+ 
+ #define QSPI_SELECT_LOWER_CS            BIT(0)
+ #define QSPI_SELECT_UPPER_CS            BIT(1)
+-- 
+2.37.6
+

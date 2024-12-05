@@ -1,0 +1,7 @@
+/include/ "system-conf.dtsi"
+/ {
+	model = "Enclustra ZX2 SOM";
+};
+#include "zynq_enclustra_common.dtsi"
+#include "zynq_enclustra_mars_zx2.dtsi"
+#include "zynq_enclustra_mars_st3.dtsi"

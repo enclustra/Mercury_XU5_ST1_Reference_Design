@@ -1,0 +1,37 @@
+// The isl12022 driver is used for the ISL12020M
+&i2c0 {
+	isl12022: isl12022@6f {
+		status = "okay";
+		compatible = "isil,isl12022";
+		reg = <0x6f>;
+	};
+};
+
+&gem0 {
+	status = "okay";
+	phy-handle = <&phy0>;
+	phy-mode = "rgmii-id";
+	/delete-property/ local-mac-address;
+
+	mdio {
+		phy0: ethernet-phy@3 {
+			reg = <3>;
+
+			txc-skew-ps = <1800>;
+			txen-skew-ps = <420>;
+
+			txd0-skew-ps = <420>;
+			txd1-skew-ps = <420>;
+			txd2-skew-ps = <420>;
+			txd3-skew-ps = <420>;
+
+			rxc-skew-ps = <1860>;
+			rxdv-skew-ps = <420>;
+
+			rxd0-skew-ps = <420>;
+			rxd1-skew-ps = <420>;
+			rxd2-skew-ps = <420>;
+			rxd3-skew-ps = <420>;
+		};
+	};
+};

@@ -1,0 +1,121 @@
+/ {
+	aliases {
+		ethernet0 = &gem1;
+		ethernet1 = &gem3;
+		i2c0 = &i2c_mgmt;
+		i2c1 = &i2c_user;
+		serial0 = &uart0;
+		spi0 = &qspi;
+	};
+};
+
+&gem3 {
+	status = "okay";
+	/delete-property/ local-mac-address;
+	// mode=rgmii-id enables additional 2ns RX and TX clock delay
+	phy-mode = "rgmii-id";
+	phy-handle = <&phy3>;
+	mdio {
+		// KSZ9131
+		phy3: phy@3 {
+			reg = <3>;
+
+			// 2 ns TX clock delay
+			txc-skew-psec = <0>;
+			txen-skew-psec = <0>;
+
+			txd0-skew-psec = <0>;
+			txd1-skew-psec = <0>;
+			txd2-skew-psec = <0>;
+			txd3-skew-psec = <0>;
+
+			// 2 ns RX clock delay
+			rxc-skew-psec = <0>;
+			rxdv-skew-psec = <0>;
+
+			rxd0-skew-psec = <0>;
+			rxd1-skew-psec = <0>;
+			rxd2-skew-psec = <0>;
+			rxd3-skew-psec = <0>;
+		};
+	};
+};
+
+&gem1 {
+	status = "okay";
+	/delete-property/ local-mac-address;
+	// mode=rgmii disables additional 2ns RX and TX clock delay
+	phy-mode = "rgmii";
+	phy-handle = <&phy7>;
+	mdio {
+		// KSZ9131
+		phy7: phy@7 {
+			reg = <7>;
+
+			// 0 ns TX clock delay
+			txc-skew-psec = <0>;
+			txen-skew-psec = <0>;
+
+			txd0-skew-psec = <0>;
+			txd1-skew-psec = <0>;
+			txd2-skew-psec = <0>;
+			txd3-skew-psec = <0>;
+
+			// -0.29 ns RX clock delay
+			rxc-skew-psec = <(-700)>;
+			rxdv-skew-psec = <0>;
+
+			rxd0-skew-psec = <0>;
+			rxd1-skew-psec = <0>;
+			rxd2-skew-psec = <0>;
+			rxd3-skew-psec = <0>;
+		};
+	};
+};
+
+&qspi {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	is-dual = <1>;
+	num-cs = <2>;
+	flash0: flash@0 {
+		reg = <0x0>;
+		compatible = "spansion,s25fl512s", "jedec,spi-nor";
+		spi-rx-bus-width = <0x4>;
+		spi-tx-bus-width = <0x4>;
+		spi-max-frequency = <50000000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+	};
+};
+
+&psgtr {
+	status = "okay";
+	clocks = <&ref100>, <&ref135>;
+	clock-names = "ref2", "ref3";
+};
+
+&amba {
+	ref100: ref100M {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <100000000>;
+	};
+	ref135: ref135M {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <135000000>;
+	};
+	i2c_mgmt: i2c@ff020000 {
+		status = "okay";
+		clock-frequency = <100000>;
+		atsha204a@64 {
+			status = "okay";
+			compatible = "atmel,atsha204a", "atmel,atsha204-i2c";
+			reg = <0x64>;
+		};
+	};
+	i2c_user: i2c@ff030000 {};
+};
+

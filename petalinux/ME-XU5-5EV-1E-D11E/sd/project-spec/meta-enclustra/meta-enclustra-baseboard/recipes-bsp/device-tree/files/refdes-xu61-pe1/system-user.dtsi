@@ -1,0 +1,7 @@
+/include/ "system-conf.dtsi"
+/ {
+	model = "Enclustra XU61 SOM";
+};
+#include "zynqmp_enclustra_common.dtsi"
+#include "zynqmp_enclustra_mercury_xu61.dtsi"
+#include "zynqmp_enclustra_mercury_pe1.dtsi"

@@ -1,0 +1,141 @@
+From 2feed4bf0f19bfff11849ea3a357489e61869ded Mon Sep 17 00:00:00 2001
+From: Lothar Rubusch <lothar.rubusch@enclustra.com>
+Date: Wed, 11 Sep 2024 19:11:33 +0000
+Subject: [PATCH] emmc
+
+Signed-off-by: Lothar Rubusch <lothar.rubusch@enclustra.com>
+---
+ drivers/mmc/mmc.c        |  3 ++-
+ drivers/mmc/sdhci.c      | 12 ++++++++----
+ drivers/mmc/zynq_sdhci.c | 16 +++++++++++++---
+ include/sdhci.h          |  1 +
+ 4 files changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mmc/mmc.c b/drivers/mmc/mmc.c
+index d96db7a0f8..53f14b5489 100644
+--- a/drivers/mmc/mmc.c
++++ b/drivers/mmc/mmc.c
+@@ -2972,7 +2972,6 @@ static int mmc_complete_init(struct mmc *mmc)
+ {
+ 	int err = 0;
+ 
+-	mmc->init_in_progress = 0;
+ 	if (mmc->op_cond_pending)
+ 		err = mmc_complete_op_cond(mmc);
+ 
+@@ -2982,6 +2981,8 @@ static int mmc_complete_init(struct mmc *mmc)
+ 		mmc->has_init = 0;
+ 	else
+ 		mmc->has_init = 1;
++		
++	mmc->init_in_progress = 0;
+ 	return err;
+ }
+ 
+diff --git a/drivers/mmc/sdhci.c b/drivers/mmc/sdhci.c
+index fc9c6c3799..a37e3ec282 100644
+--- a/drivers/mmc/sdhci.c
++++ b/drivers/mmc/sdhci.c
+@@ -221,6 +221,13 @@ static int sdhci_send_command(struct mmc *mmc, struct mmc_cmd *cmd,
+ 	/* Timeout unit - ms */
+ 	static unsigned int cmd_timeout = SDHCI_CMD_DEFAULT_TIMEOUT;
+ 
++	/* Some eMMC cards failes to initialize when we issue CMD8 or
++		CMD55 before the end of mmc_start_init function */
++	if ((host->quirks & SDHCI_QUIRK_EMMC_INIT) && (!mmc->has_init && !mmc->init_in_progress)){
++		if ((cmd->cmdidx == SD_CMD_SEND_IF_COND) || (cmd->cmdidx == MMC_CMD_APP_CMD))
++			return -ETIMEDOUT;
++	}
++
+ 	mask = SDHCI_CMD_INHIBIT | SDHCI_DATA_INHIBIT;
+ 
+ 	/* We shouldn't wait for data inihibit for stop commands, even
+@@ -965,10 +972,7 @@ int sdhci_setup_cfg(struct mmc_config *cfg, struct sdhci_host *host,
+ 	if (host->quirks & SDHCI_QUIRK_BROKEN_VOLTAGE)
+ 		cfg->voltages |= host->voltages;
+ 
+-	if (caps & SDHCI_CAN_DO_HISPD)
+-		cfg->host_caps |= MMC_MODE_HS | MMC_MODE_HS_52MHz;
+-
+-	cfg->host_caps |= MMC_MODE_4BIT;
++	cfg->host_caps |= MMC_MODE_HS | MMC_MODE_HS_52MHz | MMC_MODE_8BIT | MMC_MODE_4BIT;
+ 
+ 	/* Since Host Controller Version3.0 */
+ 	if (SDHCI_GET_VERSION(host) >= SDHCI_SPEC_300) {
+diff --git a/drivers/mmc/zynq_sdhci.c b/drivers/mmc/zynq_sdhci.c
+index 935540d171..2d5f69ad0d 100644
+--- a/drivers/mmc/zynq_sdhci.c
++++ b/drivers/mmc/zynq_sdhci.c
+@@ -102,6 +102,7 @@ struct arasan_sdhci_priv {
+ 	u32 node_id;
+ 	u8 bank;
+ 	u8 no_1p8;
++	u8 is_emmc;
+ 	bool internal_phy_reg;
+ 	struct reset_ctl_bulk resets;
+ };
+@@ -1092,7 +1093,7 @@ static int arasan_sdhci_probe(struct udevice *dev)
+ 	unsigned long clock;
+ 	int ret;
+ 
+-	host = priv->host;
++        host = priv->host;
+ 
+ #if defined(CONFIG_ARCH_ZYNQMP) && defined(CONFIG_ZYNQMP_FIRMWARE)
+ 	if (device_is_compatible(dev, "xlnx,zynqmp-8.9a")) {
+@@ -1135,6 +1136,10 @@ static int arasan_sdhci_probe(struct udevice *dev)
+ 	host->quirks |= SDHCI_QUIRK_BROKEN_HISPD_MODE;
+ #endif
+ 
++	if (priv->is_emmc)
++		host->quirks |= SDHCI_QUIRK_EMMC_INIT;
++
++	host->version = sdhci_readw(host, SDHCI_HOST_VERSION);
+ 	if (priv->no_1p8)
+ 		host->quirks |= SDHCI_QUIRK_NO_1_8_V;
+ 
+@@ -1142,7 +1147,7 @@ static int arasan_sdhci_probe(struct udevice *dev)
+ 	    device_is_compatible(dev, "xlnx,versal-net-emmc"))
+ 		host->quirks |= SDHCI_QUIRK_CAPS_BIT63_FOR_HS400;
+ 
+-	plat->cfg.f_max = CONFIG_ZYNQ_SDHCI_MAX_FREQ;
++	plat->cfg.f_max = dev_read_u32_default(dev, "max-frequency", CONFIG_ZYNQ_SDHCI_MAX_FREQ);
+ 
+ 	ret = mmc_of_parse(dev, &plat->cfg);
+ 	if (ret)
+@@ -1194,6 +1199,11 @@ static int arasan_sdhci_of_to_plat(struct udevice *dev)
+ 
+ 	priv->host->name = dev->name;
+ 
++	if (fdt_get_property(gd->fdt_blob, dev_of_offset(dev), "is_emmc", NULL))
++		priv->is_emmc = 1;
++	else
++		priv->is_emmc = 0;
++
+ #if defined(CONFIG_ARCH_ZYNQMP) || defined(CONFIG_ARCH_VERSAL) || defined(CONFIG_ARCH_VERSAL_NET)
+ 	priv->host->ops = &arasan_ops;
+ 	arasan_dt_parse_clk_phases(dev);
+@@ -1203,7 +1213,7 @@ static int arasan_sdhci_of_to_plat(struct udevice *dev)
+ 	if (!priv->host->ioaddr)
+ 		return -EINVAL;
+ 
+-	priv->bank = dev_read_u32_default(dev, "xlnx,mio-bank", 0);
++	priv->bank = dev_read_u32_default(dev, "xlnx,mio_bank", -1);
+ 	priv->no_1p8 = dev_read_bool(dev, "no-1-8-v");
+ 
+ 	priv->node_id = 0;
+diff --git a/include/sdhci.h b/include/sdhci.h
+index 70fefca2a9..9afb4bbe8a 100644
+--- a/include/sdhci.h
++++ b/include/sdhci.h
+@@ -252,6 +252,7 @@
+ /* Capability register bit-63 indicates HS400 support */
+ #define SDHCI_QUIRK_CAPS_BIT63_FOR_HS400	BIT(11)
+ 
++#define SDHCI_QUIRK_EMMC_INIT		(1 << 11)
+ /* to make gcc happy */
+ struct sdhci_host;
+ 
+-- 
+2.37.6
+

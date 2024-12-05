@@ -1,0 +1,28 @@
+From e523cfef297b987e5c305308b6f8c1747563fce7 Mon Sep 17 00:00:00 2001
+From: Ivan Vera <ivan.vera@enclustra.com>
+Date: Tue, 29 Oct 2024 10:54:18 +0000
+Subject: [PATCH] [PATCH] Ensure that calibration reg is written during probe
+
+Signed-off-by: Ivan Vera <ivan.vera@enclustra.com>
+---
+ drivers/rtc/rtc-zynqmp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/rtc/rtc-zynqmp.c b/drivers/rtc/rtc-zynqmp.c
+index 08ed171bdab4..1d4a2114a5a5 100644
+--- a/drivers/rtc/rtc-zynqmp.c
++++ b/drivers/rtc/rtc-zynqmp.c
+@@ -331,9 +331,7 @@ static int xlnx_rtc_probe(struct platform_device *pdev)
+ 		if (ret)
+ 			xrtcdev->freq = RTC_CALIB_DEF;
+ 	}
+-	ret = readl(xrtcdev->reg_base + RTC_CALIB_RD);
+-	if (!ret)
+-		writel(xrtcdev->freq, (xrtcdev->reg_base + RTC_CALIB_WR));
++	writel(xrtcdev->freq, (xrtcdev->reg_base + RTC_CALIB_WR));
+ 
+ 	xlnx_init_rtc(xrtcdev);
+ 
+-- 
+2.37.6
+

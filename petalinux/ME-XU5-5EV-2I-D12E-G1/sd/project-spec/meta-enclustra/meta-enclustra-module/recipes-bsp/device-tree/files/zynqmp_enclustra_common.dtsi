@@ -1,0 +1,6 @@
+&sdhci0 {
+	status = "okay";
+	non-removable;
+	disable-wp;
+	bus-width = <8>;
+};

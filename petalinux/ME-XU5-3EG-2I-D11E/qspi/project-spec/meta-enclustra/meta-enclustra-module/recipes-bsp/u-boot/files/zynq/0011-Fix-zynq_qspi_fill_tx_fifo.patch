@@ -1,0 +1,25 @@
+From d25a5509647d5347c82869382e16a1038afb2790 Mon Sep 17 00:00:00 2001
+From: Ivan Vera <ivan.vera@enclustra.com>
+Date: Tue, 24 Sep 2024 09:44:15 +0200
+Subject: [PATCH] Fix zynq_qspi_fill_tx_fifo
+
+---
+ drivers/spi/zynq_qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/zynq_qspi.c b/drivers/spi/zynq_qspi.c
+index 3e0ef8561e..be638d43ad 100644
+--- a/drivers/spi/zynq_qspi.c
++++ b/drivers/spi/zynq_qspi.c
+@@ -424,7 +424,7 @@ static void zynq_qspi_fill_tx_fifo(struct zynq_qspi_priv *priv, u32 size)
+ 			    !priv->is_inst && (len % 2))
+ 				len++;
+ 			offset = (priv->rx_buf) ?
+-				 offsets[3] : offsets[len - 1];
++				 offsets[0] : offsets[len];
+ 			writel(data, &regs->cr + (offset / 4));
+ 		}
+ 	}
+-- 
+2.45.2
+

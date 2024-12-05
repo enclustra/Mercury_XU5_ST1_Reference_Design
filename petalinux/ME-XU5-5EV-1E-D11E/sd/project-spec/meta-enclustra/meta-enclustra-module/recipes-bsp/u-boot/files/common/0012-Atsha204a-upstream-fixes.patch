@@ -1,0 +1,208 @@
+From 61dec6b80e436e8843aace9e496591c4be5af3b4 Mon Sep 17 00:00:00 2001
+From: Arthur Ruder <arthur.ruder@enclustra.com>
+Date: Mon, 18 Nov 2024 14:33:46 +0000
+Subject: [PATCH] Add atsha204 patches from upstream
+
+Upstream commit: c4841ae4059f5eb46af38f53793f772e3dac140b
+Author: Michał Barnaś <barnas@google.com>
+Date: 19/02/2024 17:32:02
+Message:
+misc: atsha204a: remove broken for loop
+
+Some previous commit changed the continue statement to return,
+making the for loop used to retry waking up the chip to always
+return after one iteration. This commit removes the loop, cleaning
+the code a little.
+
+Signed-off-by: Michał Barnaś <barnas@google.com>
+
+Upstream commit: 6e0d4a7e02fa6d82f70fa74b9be564301111c462
+Author: Michał Barnaś <barnas@google.com>
+Date: 19/02/2024 17:32:03
+Message:
+misc: atsha204a: fix sleep function
+
+Fix the sleep function to issue the sleep command instead of idle one.
+
+Signed-off-by: Michał Barnaś <barnas@google.com>
+
+Upstream commit: 2a31d71d830fa4269208c846256a5a274b0d70fb
+Author: Michał Barnaś <barnas@google.com>
+Date: 19/02/2024 17:32:04
+Message:
+misc: atsha204a: fix wakeup function
+
+The ATSHA204A chip requires SDA line to go low for at least 60us to
+wake up the chip. Previous implementation did not meet this requirement
+due to the NAK received on bus and not sending the zeroes.
+The function to ignore the NAK and send bytes regardless is not
+supported in the u-boot making it impossible to wake up the chip
+this way.
+Instead, the bus speed, if needed, is set to lowest value and the
+message is sent to the address 0x0. This way, the address of zero
+makes the SDA line go low for about 80us, meeting the required time
+to wake up the chip. The zero length packet is not sent by the i2c,
+so the one byte is sent to the transfer function, but only the address
+is sent anyway.
+After sending the zero address, the bus speed is restored to the
+previous value if it was slowed down to wake up the chip.
+
+Signed-off-by: Michał Barnaś <barnas@google.com>
+
+Upstream commit: 4fa7521f66188b3fd5909de7a84d00492c7c32b5
+Author: Tom Rini <trini@konsulko.com>
+Date: 02/05/2024 03:30:58
+Message:
+misc: Remove <common.h> and add needed includes
+
+Remove <common.h> from this driver directory and when needed
+add missing include files directly.
+
+Signed-off-by: Tom Rini <trini@konsulko.com>
+
+---
+ drivers/misc/atsha204a-i2c.c | 91 ++++++++++++++++++++++++------------
+ 1 file changed, 61 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/misc/atsha204a-i2c.c b/drivers/misc/atsha204a-i2c.c
+index d3c515828f..3b9046da88 100644
+--- a/drivers/misc/atsha204a-i2c.c
++++ b/drivers/misc/atsha204a-i2c.c
+@@ -10,7 +10,6 @@
+  * published by the Free Software Foundation.
+  */
+ 
+-#include <common.h>
+ #include <dm.h>
+ #include <i2c.h>
+ #include <errno.h>
+@@ -21,7 +20,6 @@
+ #include <linux/bitrev.h>
+ #include <u-boot/crc.h>
+ 
+-#define ATSHA204A_TWLO_US		60
+ #define ATSHA204A_TWHI_US		2500
+ #define ATSHA204A_TRANSACTION_TIMEOUT	100000
+ #define ATSHA204A_TRANSACTION_RETRY	5
+@@ -34,6 +32,48 @@ static inline u16 atsha204a_crc16(const u8 *buffer, size_t len)
+ 	return bitrev16(crc16(0, buffer, len));
+ }
+ 
++static int atsha204a_ping_bus(struct udevice *dev)
++{
++	struct udevice *bus = dev_get_parent(dev);
++	struct i2c_msg msg;
++	int speed;
++	int res;
++	u8 val = 0;
++
++	speed = dm_i2c_get_bus_speed(bus);
++	if (speed != I2C_SPEED_STANDARD_RATE) {
++		int rv;
++
++		rv = dm_i2c_set_bus_speed(bus, I2C_SPEED_STANDARD_RATE);
++		if (rv)
++			debug("Couldn't change the I2C bus speed\n");
++	}
++
++	/*
++	 * The I2C drivers don't support sending messages when NAK is received.
++	 * This chip requires wake up low signal on SDA for >= 60us.
++	 * To achieve this, we slow the bus to 100kHz and send an empty
++	 * message to address 0. This will hold the SDA line low for the
++	 * required time to wake up the chip.
++	 */
++	msg.addr = 0;
++	msg.flags = I2C_M_STOP;
++	msg.len = sizeof(val);
++	msg.buf = &val;
++
++	res = dm_i2c_xfer(dev, &msg, 1);
++
++	if (speed != I2C_SPEED_STANDARD_RATE) {
++		int rv;
++
++		rv = dm_i2c_set_bus_speed(bus, speed);
++		if (rv)
++			debug("Couldn't restore the I2C bus speed\n");
++	}
++
++	return res;
++}
++
+ static int atsha204a_send(struct udevice *dev, const u8 *buf, u8 len)
+ {
+ 	fdt_addr_t *priv = dev_get_priv(dev);
+@@ -94,42 +134,33 @@ static int atsha204a_recv_resp(struct udevice *dev,
+ 
+ int atsha204a_wakeup(struct udevice *dev)
+ {
+-	u8 req[4];
+ 	struct atsha204a_resp resp;
+-	int try, res;
++	int res;
+ 
+ 	debug("Waking up ATSHA204A\n");
+ 
+-	for (try = 1; try <= 10; ++try) {
+-		debug("Try %i... ", try);
++	/*
++	 * The device ignores any levels or transitions on the SCL pin
++	 * when the device is idle, asleep or during waking up.
++	 * Don't check for error when waking up the device.
++	 */
++	atsha204a_ping_bus(dev);
+ 
+-		/*
+-		 * The device ignores any levels or transitions on the SCL pin
+-		 * when the device is idle, asleep or during waking up.
+-		 * Don't check for error when waking up the device.
+-		 */
+-		memset(req, 0, 4);
+-		atsha204a_send(dev, req, 4);
+-
+-		udelay(ATSHA204A_TWLO_US + ATSHA204A_TWHI_US);
+-
+-		res = atsha204a_recv_resp(dev, &resp);
+-		if (res) {
+-			debug("failed on receiving response, ending\n");
+-			return res;
+-		}
++	udelay(ATSHA204A_TWHI_US);
+ 
+-		if (resp.code != ATSHA204A_STATUS_AFTER_WAKE) {
+-			debug ("failed (responce code = %02x), ending\n",
+-			       resp.code);
+-			return -EBADMSG;
+-		}
++	res = atsha204a_recv_resp(dev, &resp);
++	if (res) {
++		debug("failed on receiving response, ending\n");
++		return res;
++	}
+ 
+-		debug("success\n");
+-		return 0;
++	if (resp.code != ATSHA204A_STATUS_AFTER_WAKE) {
++		debug("failed (response code = %02x), ending\n", resp.code);
++		return -EBADMSG;
+ 	}
+ 
+-	return -ETIMEDOUT;
++	debug("success\n");
++	return 0;
+ }
+ 
+ int atsha204a_idle(struct udevice *dev)
+@@ -146,7 +177,7 @@ int atsha204a_idle(struct udevice *dev)
+ int atsha204a_sleep(struct udevice *dev)
+ {
+ 	int res;
+-	u8 req = ATSHA204A_FUNC_IDLE;
++	u8 req = ATSHA204A_FUNC_SLEEP;
+ 
+ 	res = atsha204a_send(dev, &req, 1);
+ 	if (res)
+-- 
+2.37.6
+
