@@ -1,3 +1,8 @@
+## 2024.2_v1.3.2
+* Adjust PS reference clock frequency to remove rounding errors
+* Removed ME-XU5-4CG-1E-D11E-G1, ME-XU5-5EV-1E-D11E and ME-XU5-5EV-2I-D12E-G1 product models
+* Adjust frequency of C0_SYS_CLK for PL DDR memories to match the MIG settings
+
 ## 2024.1_v1.2.2
 * Add CLK_USR IOBUFDS instance to top level VHDL
 * Refactor documentation

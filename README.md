@@ -10,8 +10,9 @@ Enclustra GmbH [support@enclustra.com]
 
 ## Documentation
 
-* [Mercury XU5 ST1 Reference Design documentation](./reference_design/doc/Mercury_XU5_ST1.pdf)
-* [Petalinux documentation](https://github.com/enclustra/PetalinuxDocumentation)
+* [Mercury XU5 ST1 Reference Design documentation](./doc/Mercury_XU5_ST1.pdf)
+* [Enclustra AMD Yocto meta layer](https://github.com/enclustra/meta-enclustra-amd)
+    > **_NOTE:_** The Yocto meta layer repository describes how to create a Linux image using the binaries provided in this reference design repository.
 * Enclustra Application Notes
   - [I2C AppNote](https://github.com/enclustra/I2CAppNote)
   - [Gigabit Ethernet AppNote](https://github.com/enclustra/GigabitEthernetAppNote)
